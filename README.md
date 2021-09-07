@@ -18,6 +18,9 @@ DISCORD_TEST_RESPONSE=Hello, Discord!
 ## Usage
 
 `./python3 restarterbot.py`
+
+Say the RESTART_TRIGGER phrase in any channel the bot is in, or via DM to restart your container.
+
 ### :warning: Requires Python3.6 or greater
 
 ## Built with
