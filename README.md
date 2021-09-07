@@ -6,14 +6,14 @@ A Discord bot that restarts a Docker container via Portainer.
 
 Configure the bot via the variables defined in the `.env` file.
 
-DISCORD_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-PORTAINER_USER=username
-PORTAINER_PASS=password
-PORTAINER_URL=http://example.com:9000/api
-CONTAINER_ID=yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
-RESTART_TRIGGER=restart the container
-DISCORD_TEST_TRIGGER=>** discordtest
-DISCORD_TEST_RESPONSE=Hello, Discord!
+DISCORD_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  
+PORTAINER_USER=username  
+PORTAINER_PASS=password  
+PORTAINER_URL=http://example.com:9000/api  
+CONTAINER_ID=yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy  
+RESTART_TRIGGER=restart the container  
+DISCORD_TEST_TRIGGER=>** discordtest  
+DISCORD_TEST_RESPONSE=Hello, Discord!  
 
 ## Usage
 
