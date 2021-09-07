@@ -25,4 +25,4 @@ Say the RESTART_TRIGGER phrase in any channel the bot is in, or via DM to restar
 
 ## Built with
 
-- [Python3][https://docs.python.org/3/]
+- [Python3](https://docs.python.org/3/)
