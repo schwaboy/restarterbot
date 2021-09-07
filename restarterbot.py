@@ -38,7 +38,6 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    print(message)
     if message.author == client.user:
         return
     elif message.content.lower().startswith('greetings'):
