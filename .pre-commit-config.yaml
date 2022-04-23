@@ -1,0 +1,41 @@
+minimum_pre_commit_version: "2.13"
+fail_fast: true
+repos:
+  - repo: git@github.com:pre-commit/pre-commit-hooks.git
+    rev: v4.2.0
+    hooks:
+      - id: detect-aws-credentials
+        args: [--allow-missing-credentials]
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+      - id: check-added-large-files
+      - id: check-executables-have-shebangs
+      - id: check-merge-conflict
+      - id: detect-private-key
+      - id: check-json
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+      - id: check-symlinks
+      - id: destroyed-symlinks
+      - id: check-case-conflict
+      - id: check-docstring-first
+      - id: check-shebang-scripts-are-executable
+      - id: requirements-txt-fixer
+  - repo: https://github.com/python/black.git
+    rev: 22.3.0
+    hooks:
+      - id: black
+        language_version: python3
+  - repo: https://gitlab.com/pycqa/flake8.git
+    rev: 4.0.1
+    hooks:
+      - id: flake8
+        additional_dependencies:
+        - flake8-black>=0.3.2
+        - flake8-docstrings
+        language_version: python3
+  - repo: git@github.com:sirwart/ripsecrets.git
+    rev: v0.1.3
+    hooks:
+      - id: ripsecrets
