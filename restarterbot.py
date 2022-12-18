@@ -6,15 +6,18 @@ import logging
 from dotenv import load_dotenv
 import requests
 import discord
+from discord.ext import commands
+import nbascores
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-client = discord.Client()
+# client = discord.Client()
+client = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+logging.basicConfig(filename="thebot.log", filemode="a", level=logging.DEBUG)
 
 
 def restart_container():
     """Restart a Docker container using the Portainer API."""
-    logging.basicConfig(filename="thebot.log", filemode="a", level=logging.DEBUG)
     portainer_pass = os.getenv("PORTAINER_PASS")
     portainer_user = os.getenv("PORTAINER_USER")
     portainer_url = os.getenv("PORTAINER_URL")
@@ -34,8 +37,18 @@ def restart_container():
 
 @client.event
 async def on_ready():
-    """Listen for and process user input."""
+    """Display login confirmation message."""
     print("We have logged in as {0.user}".format(client))
+    try:
+        synced = await client.tree.sync()
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+        print(e)
+
+
+@client.tree.command(name="scores")
+async def scores(interaction: discord.Interaction):
+    await interaction.response.send_message(str("\n".join(nbascores.getscores())))
 
 
 @client.event
