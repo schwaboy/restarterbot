@@ -63,6 +63,3 @@ def getscores():
             else:
                 scores[-1] = str(scores[-1] + "  " + str((game["gameStatusText"])))
     return scores
-
-
-print(getscores())

@@ -8,6 +8,7 @@ import requests
 import discord
 from discord.ext import commands
 import nbascores
+import nbastandings
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -49,6 +50,20 @@ async def on_ready():
 @client.tree.command(name="scores")
 async def scores(interaction: discord.Interaction):
     await interaction.response.send_message(str("\n".join(nbascores.getscores())))
+
+
+@client.tree.command(name="standings")
+async def standings(interaction: discord.Interaction, conference: str):
+    await interaction.response.send_message(
+        str("\n".join(nbastandings.playoffs(conference)))
+    )
+
+
+@client.tree.command(name="lottery")
+async def standings(interaction: discord.Interaction, conference: str):
+    await interaction.response.send_message(
+        str("\n".join(nbastandings.lottery(conference)))
+    )
 
 
 @client.event
