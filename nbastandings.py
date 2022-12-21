@@ -1,6 +1,8 @@
 #!python3
 
 from nba_api.stats.endpoints import leaguestandingsv3
+import inflect
+import aliases
 
 result = leaguestandingsv3.LeagueStandingsV3()
 standings = result.get_dict()
@@ -13,6 +15,9 @@ confs = {
 def playoffs(conference) -> str:
     teams = []
     count = 1
+    for k, v in aliases.teamalias.items():
+        if teamname in v:
+            teamname = k
     for team in standings["resultSets"][0]["rowSet"]:
         if team[10] in confs[conference.lower()]:
             teams.append(team)
@@ -32,6 +37,9 @@ def playoffs(conference) -> str:
 def lottery(conference) -> str:
     teams = []
     count = 1
+    for k, v in aliases.teamalias.items():
+        if teamname in v:
+            teamname = k
     for team in standings["resultSets"][0]["rowSet"]:
         if team[10] in confs[conference.lower()]:
             teams.append(team)
@@ -50,16 +58,22 @@ def lottery(conference) -> str:
 
 
 def streak(teamname) -> str:
+    for k, v in aliases.teamalias.items():
+        if teamname in v:
+            teamname = k
     for team in standings["resultSets"][0]["rowSet"]:
         if teamname.capitalize() in team:
-            x = [team[20], team[37]]
+            x = f"{team[3]} {team[4]}\nCurrent streak: {team[37]}\nLast 10 games: {team[20]}"
     return x
 
 
 def record(teamname) -> str:
     p = inflect.engine()
+    for k, v in aliases.teamalias.items():
+        if teamname in v:
+            teamname = k
     for team in standings["resultSets"][0]["rowSet"]:
         if teamname.capitalize() in team:
-            x = f"Record: {team[13]}-{team[14]} ({('%.3f' %team[15]).lstrip('0')})\n{p.ordinal(team[12])} in the {team[10]} Division.\n{team[7].strip()} vs. the {team[6]}ern Conference.\n{team[11].strip()} vs. the {team[10]} Division."
+            x = f"{team[3]} {team[4]}\nRecord: {team[13]}-{team[14]} ({('%.3f' %team[15]).lstrip('0')})\n{p.ordinal(team[12])} in the {team[10]} Division.\n{p.ordinal(team[8])} in the {team[6]}ern Conference.\n{team[7].strip()} vs. the {team[6]}ern Conference.\n{team[11].strip()} vs. the {team[10]} Division."
             [team[13], team[14], team[15], team[10], team[12], team[13]]
     return x
