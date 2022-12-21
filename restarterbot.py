@@ -66,6 +66,16 @@ async def standings(interaction: discord.Interaction, conference: str):
     )
 
 
+@client.tree.command(name="streak")
+async def standings(interaction: discord.Interaction, teamname: str):
+    await interaction.response.send_message(nbastandings.streak(teamname))
+
+
+@client.tree.command(name="record")
+async def standings(interaction: discord.Interaction, teamname: str):
+    await interaction.response.send_message(nbastandings.record(teamname))
+
+
 @client.event
 async def on_message(message):
     """Display login confirmation message."""
