@@ -15,9 +15,6 @@ confs = {
 def playoffs(conference) -> str:
     teams = []
     count = 1
-    for k, v in aliases.teamalias.items():
-        if teamname in v:
-            teamname = k
     for team in standings["resultSets"][0]["rowSet"]:
         if team[10] in confs[conference.lower()]:
             teams.append(team)
@@ -37,9 +34,6 @@ def playoffs(conference) -> str:
 def lottery(conference) -> str:
     teams = []
     count = 1
-    for k, v in aliases.teamalias.items():
-        if teamname in v:
-            teamname = k
     for team in standings["resultSets"][0]["rowSet"]:
         if team[10] in confs[conference.lower()]:
             teams.append(team)
@@ -59,7 +53,7 @@ def lottery(conference) -> str:
 
 def streak(teamname) -> str:
     for k, v in aliases.teamalias.items():
-        if teamname in v:
+        if teamname.lower() in v:
             teamname = k
     for team in standings["resultSets"][0]["rowSet"]:
         if teamname.capitalize() in team:
@@ -70,7 +64,7 @@ def streak(teamname) -> str:
 def record(teamname) -> str:
     p = inflect.engine()
     for k, v in aliases.teamalias.items():
-        if teamname in v:
+        if teamname.lower() in v:
             teamname = k
     for team in standings["resultSets"][0]["rowSet"]:
         if teamname.capitalize() in team:
