@@ -61,7 +61,7 @@ def lottery(conference) -> str:
 
 def streak(teamname) -> str:
     for k, v in aliases.teamalias.items():
-        if teamname in v:
+        if teamname.lower() in v:
             teamname = k
     for team in standings["resultSets"][0]["rowSet"]:
         if teamname.capitalize() in team:
@@ -72,7 +72,7 @@ def streak(teamname) -> str:
 def record(teamname) -> str:
     p = inflect.engine()
     for k, v in aliases.teamalias.items():
-        if teamname in v:
+        if teamname.lower() in v:
             teamname = k
     for team in standings["resultSets"][0]["rowSet"]:
         if teamname.capitalize() in team:
