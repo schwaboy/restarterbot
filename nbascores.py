@@ -2,8 +2,10 @@ import requests
 from datetime import datetime
 import pytz
 
+tz = pytz.timezone("US/Hawaii")
 
-def getscores():
+
+def getscores(date):
     headers = {
         "Host": "stats.nba.com",
         "User-Agent": "JerrySloan/0.1.0",
@@ -14,12 +16,11 @@ def getscores():
         "Referer": "https://www.nba.com/",
     }
 
-    tz = pytz.timezone("US/Hawaii")
-    url = f"https://stats.nba.com/stats/scoreboardv3?GameDate={datetime.now(tz).strftime('%Y-%m-%d')}&LeagueID=00"
+    url = f"https://stats.nba.com/stats/scoreboardv3?GameDate={date}&LeagueID=00"
     r = requests.get(url, headers=headers)
-    schedule = r.json()
 
-    scores = []
+    scores = [f"NBA scores for {date}\n"]
+    schedule = r.json()
     for game in schedule["scoreboard"]["games"]:
         if game["gameStatus"] == 1:
             scores.append(
@@ -34,7 +35,6 @@ def getscores():
                 )
             )
         else:
-            # print(game)
             scores.append(
                 str(
                     (

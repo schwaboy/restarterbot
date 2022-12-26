@@ -9,6 +9,11 @@ import discord
 from discord.ext import commands
 import nbascores
 import nbastandings
+import aliases
+from datetime import datetime
+import pytz
+
+tz = pytz.timezone("US/Hawaii")
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -47,31 +52,55 @@ async def on_ready():
         print(e)
 
 
-@client.tree.command(name="scores")
-async def scores(interaction: discord.Interaction):
-    await interaction.response.send_message(str("\n".join(nbascores.getscores())))
+@client.tree.command(name="scores", description="NBA scores")
+@discord.app_commands.describe(date="Date in YYYY-MM-DD format")
+async def scores(
+    interaction: discord.Interaction, date: str = datetime.now(tz).strftime("%Y-%m-%d")
+):
+    try:
+        datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        await interaction.response.send_message(
+            f"Sorry {interaction.user.mention}, {date} is not a valid date. Please use the YYYY-MM-DD format."
+        )
+        return
+    try:
+        r = nbascores.getscores(date)
+        assert r
+    except AssertionError:
+        await interaction.response.send_message(
+            f"There are no games scheduled on {date}, {interaction.user.mention}"
+        )
+    else:
+        await interaction.response.send_message(str("\n".join(r)))
 
 
-@client.tree.command(name="standings")
+@client.tree.command(name="standings", description="NBA standings by conference")
 async def standings(interaction: discord.Interaction, conference: str):
     await interaction.response.send_message(
         str("\n".join(nbastandings.playoffs(conference)))
     )
 
 
-@client.tree.command(name="lottery")
+@client.tree.command(name="stfu", description="Shut the fuck up")
+@discord.app_commands.describe(user="The user you want to shut the fuck up")
+async def stfu(interaction: discord.Interaction, user: str):
+    await interaction.response.send_message(f"Shut the fuck up, {user}")
+
+
+@client.tree.command(name="lottery", description="Lottery teams")
 async def standings(interaction: discord.Interaction, conference: str):
     await interaction.response.send_message(
         str("\n".join(nbastandings.lottery(conference)))
     )
 
 
-@client.tree.command(name="streak")
+@client.tree.command(name="streak", description="W/L streak of an NBA team")
 async def standings(interaction: discord.Interaction, teamname: str):
     await interaction.response.send_message(nbastandings.streak(teamname))
 
 
-@client.tree.command(name="record")
+@client.tree.command(name="record", description="Current W/L record of an NBA team")
 async def standings(interaction: discord.Interaction, teamname: str):
     await interaction.response.send_message(nbastandings.record(teamname))
 

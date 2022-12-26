@@ -9,6 +9,8 @@ standings = result.get_dict()
 confs = {
     "east": ["Atlantic", "Central", "Southeast"],
     "west": ["Southwest", "Northwest", "Pacific"],
+    "eastern": ["Atlantic", "Central", "Southeast"],
+    "western": ["Southwest", "Northwest", "Pacific"],
 }
 
 
