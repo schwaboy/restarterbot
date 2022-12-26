@@ -72,7 +72,9 @@ async def scores(
             f"There are no games scheduled on {date}, {interaction.user.mention}"
         )
     else:
-        await interaction.response.send_message(str("\n".join(r)))
+        await interaction.response.send_message(
+            f"NBA scores for {date}\n\n" + str("\n".join(r))
+        )
 
 
 @client.tree.command(name="standings", description="NBA standings by conference")

@@ -19,7 +19,7 @@ def getscores(date):
     url = f"https://stats.nba.com/stats/scoreboardv3?GameDate={date}&LeagueID=00"
     r = requests.get(url, headers=headers)
 
-    scores = [f"NBA scores for {date}\n"]
+    scores = []
     schedule = r.json()
     for game in schedule["scoreboard"]["games"]:
         if game["gameStatus"] == 1:
