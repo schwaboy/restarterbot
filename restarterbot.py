@@ -29,13 +29,13 @@ def restart_container():
     portainer_url = os.getenv("PORTAINER_URL")
     portainer_login = {"password": portainer_pass, "username": portainer_user}
 
-    auth_response = requests.post(f"{portainer_url}/auth", json=(portainer_login))
+    auth_response = requests.post(f"{portainer_url}/api/auth", json=(portainer_login))
     d = auth_response.json()
     portainer_token = d["jwt"]
     headers = {"Authorization": "Bearer " + portainer_token}
 
     restart_response = requests.post(
-        f"{portainer_url}/endpoints/1/docker/containers/{os.getenv('CONTAINER_ID')}/restart",
+        f"{portainer_url}/api/endpoints/1/docker/containers/{os.getenv('CONTAINER_ID')}/restart",
         headers=headers,
     )
     return restart_response.status_code
