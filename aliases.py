@@ -29,3 +29,36 @@ teamalias = {
     "Warriors": ["gsw", "dubs"],
     "Wizards": ["was", "wiz"],
 }
+
+confs = {
+    "east": ["Atlantic", "Central", "Southeast"],
+    "west": ["Southwest", "Northwest", "Pacific"],
+    "eastern": ["Atlantic", "Central", "Southeast"],
+    "western": ["Southwest", "Northwest", "Pacific"],
+}
+
+statnicks = {
+    "GP": ["games played", "gms", "games", "played"],
+    "MIN": ["minutes played", "mins", "minutes", "minplayed", "minsplayed"],
+    "FGM": ["field goals", "field goals made"],
+    "FGA": ["field goals attempted", "attempts", "shots taken", "shots attempted"],
+    "FG_PCT": ["field goal %", "fg%", "shooting%"],
+    "FG3M": ["3-pointers made", "3pm", "3s", "3's", "threes"],
+    "FG3A": ["3-point attempts", "3pa", "chucks"],
+    "FG3_PCT": ["3p%", "three point %", "3pt%"],
+    "FTM": ["free throws made", "fts"],
+    "FTA": ["free throw attempts"],
+    "FT_PCT": ["free throw %", "ft%"],
+    "OREB": ["offensive rebounds", "offensive boards"],
+    "DREB": ["defensive rebounds", "defensive boards"],
+    "REB": ["rebounds", "total rebounds", "boards", "glass"],
+    "AST": ["assists", "dimes", "ass"],
+    "STL": ["steals"],
+    "BLK": ["blocks", "blocked shots", "rejections"],
+    "TOV": ["turnovers", "giveaways"],
+    "PF": ["fouls", "personal fouls"],
+    "PTS": ["points", "ppg", "points per game"],
+    "EFF": ["efficiency"],
+    "ASS_TOV": ["ass:tov", "assists:turnovers", "atr", "a:t"],
+    "STL_TOV": ["stl:tov", "steals:turnovers", "str", "s:t"],
+}

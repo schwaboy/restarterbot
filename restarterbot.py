@@ -9,6 +9,7 @@ import discord
 from discord.ext import commands
 import nbascores
 import nbastandings
+import nbaleaders
 import aliases
 from datetime import datetime
 import pytz
@@ -103,6 +104,18 @@ async def standings(interaction: discord.Interaction, teamname: str):
 @client.tree.command(name="record", description="Current W/L record of an NBA team")
 async def standings(interaction: discord.Interaction, teamname: str):
     await interaction.response.send_message(nbastandings.record(teamname))
+
+
+@client.tree.command(
+    name="leaders", description="The top 10 players in a given statistical category"
+)
+@discord.app_commands.describe(
+    statistic="A statistical category such as points or rebounds"
+)
+async def standings(interaction: discord.Interaction, statistic: str):
+    await interaction.response.send_message(
+        str("\n".join(nbaleaders.leaders(statistic)))
+    )
 
 
 @client.event
