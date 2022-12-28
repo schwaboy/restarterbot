@@ -1,3 +1,4 @@
+datetime>=4.9
 discord>=2.1.0
 discord.py>=2.1.0
 inflect>=6.0.2

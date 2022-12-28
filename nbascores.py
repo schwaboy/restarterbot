@@ -11,7 +11,7 @@ def getscores(date):
         "User-Agent": "JerrySloan/0.1.0",
         "Accept": "application,json, text/plain, */*",
         "Accept-Language": "en-US,en;q=0.5",
-        "Connection": "keep-alive",
+        "Connection": "close",
         "Origin": "https://www.nba.com/",
         "Referer": "https://www.nba.com/",
     }
