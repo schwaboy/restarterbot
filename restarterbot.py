@@ -91,10 +91,8 @@ async def stfu(interaction: discord.Interaction, user: str):
 
 
 @client.tree.command(name="lottery", description="Lottery teams")
-async def standings(interaction: discord.Interaction, conference: str):
-    await interaction.response.send_message(
-        str("\n".join(nbastandings.lottery(conference)))
-    )
+async def standings(interaction: discord.Interaction):
+    await interaction.response.send_message(str("\n".join(nbastandings.lottery())))
 
 
 @client.tree.command(name="streak", description="W/L streak of an NBA team")
