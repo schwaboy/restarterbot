@@ -15,7 +15,6 @@ import aliases
 from datetime import datetime
 import pytz
 
-tz = pytz.timezone("US/Hawaii")
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
@@ -57,7 +56,8 @@ async def on_ready():
 @client.tree.command(name="scores", description="NBA scores")
 @discord.app_commands.describe(date="Date in YYYY-MM-DD format")
 async def scores(
-    interaction: discord.Interaction, date: str = datetime.now(tz).strftime("%Y-%m-%d")
+    interaction: discord.Interaction,
+    date: str = datetime.now(pytz.timezone("US/Hawaii")).strftime("%Y-%m-%d"),
 ):
     try:
         datetime.strptime(date, "%Y-%m-%d")
