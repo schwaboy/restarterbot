@@ -1,4 +1,4 @@
-#!python3
+"""A module to pull the current NBA standings and team records"""
 
 from nba_api.stats.endpoints import leaguestandingsv3
 import inflect
@@ -15,6 +15,7 @@ confs = {
 
 
 def playoffs(conference) -> str:
+    """Pull the top 8 teams for the specified conference"""
     teams = []
     count = 1
     for team in standings:
@@ -34,6 +35,7 @@ def playoffs(conference) -> str:
 
 
 def lottery():
+    "Pull the bottom 14 teams league-wide"
     standings.sort(reverse=True, key=lambda x: x[15])
     x = []
     count = 15
@@ -49,30 +51,8 @@ def lottery():
     return x
 
 
-# def lottery(conference) -> str:
-#     teams = []
-#     count = 1
-#     for k, v in aliases.teamalias.items():
-#         if teamname in v:
-#             teamname = k
-#     for team in standings["resultSets"][0]["rowSet"]:
-#         if team[10] in confs[conference.lower()]:
-#             teams.append(team)
-#     x = []
-#     for team in teams:
-#         if count < 9:
-#             count += 1
-#             continue
-#         x.append(
-#             f"{count} - {team[3]} {team[4]} {team[17]} ("
-#             + ("%.3f" % team[15]).lstrip("0")
-#             + ")"
-#         )
-#         count += 1
-#     return x
-
-
 def streak(teamname) -> str:
+    "Pull the current W/L streak and record for the last 10 games of a specified team"
     for k, v in aliases.teamalias.items():
         if teamname.lower() in v:
             teamname = k
@@ -83,6 +63,7 @@ def streak(teamname) -> str:
 
 
 def record(teamname) -> str:
+    """Pull the current W/L record of the specified team"""
     p = inflect.engine()
     for k, v in aliases.teamalias.items():
         if teamname.lower() in v:

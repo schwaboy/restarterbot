@@ -1,3 +1,4 @@
+"""A module to pull the NBA scores for a specified date"""
 import requests
 from datetime import datetime
 import pytz
@@ -6,6 +7,7 @@ tz = pytz.timezone("US/Hawaii")
 
 
 def getscores(date):
+    """Get the NBA scores for the specified date"""
     headers = {
         "Host": "stats.nba.com",
         "User-Agent": "JerrySloan/0.1.0",
