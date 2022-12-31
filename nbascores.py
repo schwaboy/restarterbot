@@ -17,12 +17,24 @@ def getscores(date):
         "Origin": "https://www.nba.com/",
         "Referer": "https://www.nba.com/",
     }
-
+    if not date:
+        date = datetime.now(pytz.timezone("US/Hawaii")).strftime("%Y-%m-%d")
+    try:
+        datetime.strptime(date, "%Y-%m-%d")
+    except ValueError as v:
+        v = [f"{date} is not a valid date. Please use the YYYY-MM-DD format."]
+        return v
     url = f"https://stats.nba.com/stats/scoreboardv3?GameDate={date}&LeagueID=00"
-    r = requests.get(url, headers=headers)
+    try:
+        r = requests.get(url, headers=headers)
+        schedule = r.json()
+        assert len(schedule["scoreboard"]["games"]) > 0
+    except AssertionError as a:
+        a = {f"There are no games scheduled on {date}"}
+        return a
+    else:
+        scores = [f"NBA scores for {date}\n\n"]
 
-    scores = []
-    schedule = r.json()
     for game in schedule["scoreboard"]["games"]:
         if game["gameStatus"] == 1:
             scores.append(
@@ -65,3 +77,8 @@ def getscores(date):
             else:
                 scores[-1] = str(scores[-1] + "  " + str((game["gameStatusText"])))
     return scores
+
+
+z = getscores("2022-12-22")
+for q in z:
+    print(q)

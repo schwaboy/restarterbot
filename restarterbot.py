@@ -18,8 +18,8 @@ import pytz
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-# client = discord.Client()
-client = commands.Bot(command_prefix="!", intents=discord.Intents.all())
+# bot = discord.bot()
+bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 logging.basicConfig(filename="thebot.log", filemode="a", level=logging.DEBUG)
 
 
@@ -42,72 +42,70 @@ def restart_container():
     return restart_response.status_code
 
 
-@client.event
+@bot.event
 async def on_ready():
     """Display login confirmation message."""
-    print("We have logged in as {0.user}".format(client))
+    print("We have logged in as {0.user}".format(bot))
     try:
-        synced = await client.tree.sync()
+        synced = await bot.tree.sync()
         print(f"Synced {len(synced)} command(s)")
     except Exception as e:
         print(e)
 
 
-@client.tree.command(name="scores", description="NBA scores")
+@bot.tree.command(name="scores", description="NBA scores")
 @discord.app_commands.describe(date="Date in YYYY-MM-DD format")
-async def scores(
-    interaction: discord.Interaction,
-    date: str = datetime.now(pytz.timezone("US/Hawaii")).strftime("%Y-%m-%d"),
-):
-    try:
-        datetime.strptime(date, "%Y-%m-%d")
-    except ValueError:
-        await interaction.response.send_message(
-            f"Sorry {interaction.user.mention}, {date} is not a valid date. Please use the YYYY-MM-DD format."
-        )
-        return
-    try:
-        r = nbascores.getscores(date)
-        assert r
-    except AssertionError:
-        await interaction.response.send_message(
-            f"There are no games scheduled on {date}, {interaction.user.mention}"
-        )
-    else:
-        await interaction.response.send_message(
-            f"NBA scores for {date}\n\n" + str("\n".join(r))
-        )
+async def scores(interaction: discord.Interaction, date: str = ""):
+    await interaction.response.send_message(str("\n".join(nbascores.getscores(date))))
+    # try:
+    #     datetime.strptime(date, "%Y-%m-%d")
+    # except ValueError:
+    #     await interaction.response.send_message(
+    #         f"Sorry {interaction.user.mention}, {date} is not a valid date. Please use the YYYY-MM-DD format."
+    #     )
+    #     return
+    # try:
+    #     r = nbascores.getscores(date)
+    #     assert r
+    # except AssertionError:
+    #     await interaction.response.send_message(
+    #         f"There are no games scheduled on {date}, {interaction.user.mention}"
+    #     )
+    # else:
+    #     await interaction.response.send_message(
+    #         f"NBA scores for {date}\n\n" + str("\n".join(r))
+    #     )
 
 
-@client.tree.command(name="standings", description="NBA standings by conference")
+@bot.tree.command(name="standings", description="NBA standings by conference")
 async def standings(interaction: discord.Interaction, conference: str):
     await interaction.response.send_message(
         str("\n".join(nbastandings.playoffs(conference)))
     )
 
 
-@client.tree.command(name="stfu", description="Shut the fuck up")
+@bot.tree.command(name="stfu", description="Shut the fuck up")
 @discord.app_commands.describe(user="The user you want to shut the fuck up")
 async def stfu(interaction: discord.Interaction, user: str):
     await interaction.response.send_message(f"Shut the fuck up, {user}")
 
 
-@client.tree.command(name="lottery", description="Lottery teams")
+@bot.tree.command(name="lottery", description="Lottery teams")
 async def standings(interaction: discord.Interaction):
     await interaction.response.send_message(str("\n".join(nbastandings.lottery())))
 
 
-@client.tree.command(name="streak", description="W/L streak of an NBA team")
+@bot.tree.command(name="streak", description="W/L streak of an NBA team")
 async def standings(interaction: discord.Interaction, teamname: str):
     await interaction.response.send_message(nbastandings.streak(teamname))
 
 
-@client.tree.command(name="record", description="Current W/L record of an NBA team")
+@bot.tree.command(name="record", description="Current W/L record of an NBA team")
 async def standings(interaction: discord.Interaction, teamname: str):
     await interaction.response.send_message(nbastandings.record(teamname))
 
 
-@client.tree.command(
+@bot.tree.command(
     name="leaders", description="The top 10 players in a given statistical category"
 )
 @discord.app_commands.describe(
@@ -119,18 +117,19 @@ async def standings(interaction: discord.Interaction, statistic: str):
     )
 
 
-@client.tree.command(name="seasonstats", description="Player season stats")
+@bot.tree.command(name="seasonstats", description="Player season stats")
 @discord.app_commands.describe(playername="An NBA player's name")
 async def seasonstats(interaction: discord.Interaction, playername: str):
+    await interaction.channel.typing()
     await interaction.response.send_message(
         str("\n".join(nbaseasonstats.seasonstats(playername)))
     )
 
 
-@client.event
+@bot.event
 async def on_message(message):
     """Display login confirmation message."""
-    if message.author == client.user:
+    if message.author == bot.user:
         return
     elif message.content.lower().startswith("greetings"):
         channel = message.channel
@@ -151,4 +150,4 @@ async def on_message(message):
             await channel.send("Failed to restart the bot. Error code: " + status)
 
 
-client.run(TOKEN)
+bot.run(TOKEN)
