@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 import requests
 import discord
 from discord.ext import commands
-import cogs.nbascores as nbascores
+import cogs.nba as nba
 import nbastandings
 import nbaleaders
 import nbaseasonstats
@@ -124,13 +124,13 @@ async def standings(interaction: discord.Interaction, statistic: str):
     )
 
 
-@bot.tree.command(name="seasonstats", description="Player season stats")
-@discord.app_commands.describe(playername="An NBA player's name")
-async def seasonstats(interaction: discord.Interaction, playername: str):
-    await interaction.channel.typing()
-    await interaction.response.send_message(
-        str("\n".join(nbaseasonstats.seasonstats(playername)))
-    )
+# @bot.tree.command(name="seasonstats", description="Player season stats")
+# @discord.app_commands.describe(playername="An NBA player's name")
+# async def seasonstats(interaction: discord.Interaction, playername: str):
+#     await interaction.channel.typing()
+#     await interaction.response.send_message(
+#         str("\n".join(nbaseasonstats.seasonstats(playername)))
+#     )
 
 
 @bot.event
@@ -144,7 +144,7 @@ async def on_message(message):
     elif message.content.endswith(os.getenv("DISCORD_TEST_TRIGGER")):
         channel = message.channel
         await channel.send(os.getenv("DISCORD_TEST_RESPONSE"))
-    elif message.content == os.getenv("RESTART_TRIGGER"):
+    elif message.content.lower() == os.getenv("RESTART_TRIGGER"):
         channel = message.channel
         status = restart_container()
         if status == 204:
@@ -162,4 +162,5 @@ async def main():
     await bot.start(TOKEN)
 
 
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
