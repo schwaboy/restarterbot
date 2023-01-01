@@ -107,21 +107,21 @@ async def standings(interaction: discord.Interaction, teamname: str):
     await interaction.response.send_message(nbastandings.streak(teamname))
 
 
-@bot.tree.command(name="record", description="Current W/L record of an NBA team")
-async def standings(interaction: discord.Interaction, teamname: str):
-    await interaction.response.send_message(nbastandings.record(teamname))
+# @bot.tree.command(name="record", description="Current W/L record of an NBA team")
+# async def standings(interaction: discord.Interaction, teamname: str):
+#     await interaction.response.send_message(nbastandings.record(teamname))
 
 
-@bot.tree.command(
-    name="leaders", description="The top 10 players in a given statistical category"
-)
-@discord.app_commands.describe(
-    statistic="A statistical category such as points or rebounds"
-)
-async def standings(interaction: discord.Interaction, statistic: str):
-    await interaction.response.send_message(
-        str("\n".join(nbaleaders.leaders(statistic)))
-    )
+# @bot.tree.command(
+#     name="leaders", description="The top 10 players in a given statistical category"
+# )
+# @discord.app_commands.describe(
+#     statistic="A statistical category such as points or rebounds"
+# )
+# async def standings(interaction: discord.Interaction, statistic: str):
+#     await interaction.response.send_message(
+#         str("\n".join(nbaleaders.leaders(statistic)))
+#     )
 
 
 # @bot.tree.command(name="seasonstats", description="Player season stats")
