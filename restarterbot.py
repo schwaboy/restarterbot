@@ -3,11 +3,12 @@
 
 import os
 import logging
+import asyncio
 from dotenv import load_dotenv
 import requests
 import discord
 from discord.ext import commands
-import nbascores
+import cogs.nba as nba
 import nbastandings
 import nbaleaders
 import nbaseasonstats
@@ -21,6 +22,23 @@ TOKEN = os.getenv("DISCORD_TOKEN")
 # bot = discord.bot()
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 logging.basicConfig(filename="thebot.log", filemode="a", level=logging.DEBUG)
+
+
+async def load():
+    for file in os.listdir("./cogs"):
+        if file.endswith(".py"):
+            await bot.load_extension(f"cogs.{file[:-3]}")
+
+
+@bot.event
+async def on_ready():
+    """Display login confirmation message."""
+    print("We have logged in as {0.user}".format(bot))
+    try:
+        synced = await bot.tree.sync()
+        print(f"Synced {len(synced)} command(s)")
+    except Exception as e:
+        print(e)
 
 
 def restart_container():
@@ -42,39 +60,28 @@ def restart_container():
     return restart_response.status_code
 
 
-@bot.event
-async def on_ready():
-    """Display login confirmation message."""
-    print("We have logged in as {0.user}".format(bot))
-    try:
-        synced = await bot.tree.sync()
-        print(f"Synced {len(synced)} command(s)")
-    except Exception as e:
-        print(e)
-
-
-@bot.tree.command(name="scores", description="NBA scores")
-@discord.app_commands.describe(date="Date in YYYY-MM-DD format")
-async def scores(interaction: discord.Interaction, date: str = ""):
-    await interaction.response.send_message(str("\n".join(nbascores.getscores(date))))
-    # try:
-    #     datetime.strptime(date, "%Y-%m-%d")
-    # except ValueError:
-    #     await interaction.response.send_message(
-    #         f"Sorry {interaction.user.mention}, {date} is not a valid date. Please use the YYYY-MM-DD format."
-    #     )
-    #     return
-    # try:
-    #     r = nbascores.getscores(date)
-    #     assert r
-    # except AssertionError:
-    #     await interaction.response.send_message(
-    #         f"There are no games scheduled on {date}, {interaction.user.mention}"
-    #     )
-    # else:
-    #     await interaction.response.send_message(
-    #         f"NBA scores for {date}\n\n" + str("\n".join(r))
-    #     )
+# @bot.tree.command(name="scores", description="NBA scores")
+# @discord.app_commands.describe(date="Date in YYYY-MM-DD format")
+# async def scores(interaction: discord.Interaction, date: str = ""):
+#     await interaction.response.send_message(str("\n".join(nbascores.getscores(date))))
+# try:
+#     datetime.strptime(date, "%Y-%m-%d")
+# except ValueError:
+#     await interaction.response.send_message(
+#         f"Sorry {interaction.user.mention}, {date} is not a valid date. Please use the YYYY-MM-DD format."
+#     )
+#     return
+# try:
+#     r = nbascores.getscores(date)
+#     assert r
+# except AssertionError:
+#     await interaction.response.send_message(
+#         f"There are no games scheduled on {date}, {interaction.user.mention}"
+#     )
+# else:
+#     await interaction.response.send_message(
+#         f"NBA scores for {date}\n\n" + str("\n".join(r))
+#     )
 
 
 @bot.tree.command(name="standings", description="NBA standings by conference")
@@ -117,13 +124,13 @@ async def standings(interaction: discord.Interaction, statistic: str):
     )
 
 
-@bot.tree.command(name="seasonstats", description="Player season stats")
-@discord.app_commands.describe(playername="An NBA player's name")
-async def seasonstats(interaction: discord.Interaction, playername: str):
-    await interaction.channel.typing()
-    await interaction.response.send_message(
-        str("\n".join(nbaseasonstats.seasonstats(playername)))
-    )
+# @bot.tree.command(name="seasonstats", description="Player season stats")
+# @discord.app_commands.describe(playername="An NBA player's name")
+# async def seasonstats(interaction: discord.Interaction, playername: str):
+#     await interaction.channel.typing()
+#     await interaction.response.send_message(
+#         str("\n".join(nbaseasonstats.seasonstats(playername)))
+#     )
 
 
 @bot.event
@@ -137,7 +144,7 @@ async def on_message(message):
     elif message.content.endswith(os.getenv("DISCORD_TEST_TRIGGER")):
         channel = message.channel
         await channel.send(os.getenv("DISCORD_TEST_RESPONSE"))
-    elif message.content == os.getenv("RESTART_TRIGGER"):
+    elif message.content.lower() == os.getenv("RESTART_TRIGGER"):
         channel = message.channel
         status = restart_container()
         if status == 204:
@@ -150,4 +157,10 @@ async def on_message(message):
             await channel.send("Failed to restart the bot. Error code: " + status)
 
 
-bot.run(TOKEN)
+async def main():
+    await load()
+    await bot.start(TOKEN)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
