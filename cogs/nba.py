@@ -1,6 +1,6 @@
 """A Discord.py 2.0 Cog for NBA statistics"""
 import requests
-from datetime import datetime
+import datetime
 import pytz
 import discord
 import inflect
@@ -104,9 +104,11 @@ class nba(commands.Cog):
             "Referer": "https://www.nba.com/",
         }
         if not date:
-            date = datetime.now(pytz.timezone("US/Hawaii")).strftime("%Y-%m-%d")
+            date = datetime.datetime.now(pytz.timezone("US/Hawaii")).strftime(
+                "%Y-%m-%d"
+            )
         try:
-            datetime.strptime(date, "%Y-%m-%d")
+            datetime.datetime.strptime(date, "%Y-%m-%d")
         except ValueError:
             await interaction.followup.send(
                 f"{date} is not a valid date. Please use the YYYY-MM-DD format."
@@ -297,8 +299,8 @@ class nba(commands.Cog):
 
     @discord.app_commands.command(name="lottery", description="Lottery teams")
     async def lottery(self, interaction: discord.Interaction):
+        """Pull the bottom 14 teams league-wide"""
         await interaction.response.defer()
-        "Pull the bottom 14 teams league-wide"
         result = leaguestandingsv3.LeagueStandingsV3()
         standings = result.get_dict()["resultSets"][0]["rowSet"]
         standings.sort(reverse=True, key=lambda x: x[15])
@@ -314,6 +316,33 @@ class nba(commands.Cog):
                     + ")",
                 )
         await interaction.followup.send(str("\n".join(x)))
+
+    @discord.app_commands.command(
+        name="playerinfo", description="Information about an NBA player"
+    )
+    @discord.app_commands.describe(playername="The name of an NBA player")
+    async def playerinfo(self, interaction: discord.Interaction, playername: str):
+        """Pull the player's information"""
+        await interaction.response.defer()
+        try:
+            player = players.find_players_by_full_name(playername)
+            assert len(player) > 0
+            player_id = player[0]["id"]
+            player_info = commonplayerinfo.CommonPlayerInfo(
+                player_id
+            ).common_player_info.get_dict()
+        except:
+            errormessage = [f"Player not found, {playername}"]
+            return errormessage
+        stats = player_info["data"][0]
+        today = datetime.date.today()
+        bday = datetime.datetime.strptime(stats[7], "%Y-%m-%dT%H:%M:%S")
+        p = inflect.engine()
+        age = (
+            today.year - bday.year - ((today.month, today.day) < (bday.month, bday.day))
+        )
+        info = f"{stats[3]} #{stats[14]} ({(str(stats[15])[0])}) - {stats[19]}\nAge: {age}  Height: {stats[11]}  Weight: {stats[12]}\nDraft year: {stats[29]}  {p.ordinal((stats[13]) + 1)} season\nDraft round: {p.ordinal(stats[30])}  Pick: {p.ordinal(stats[31])}\nDrafted from:  {stats[10]}"
+        await interaction.followup.send(info)
 
 
 async def setup(bot):
