@@ -12,7 +12,7 @@ Configure the bot via the variables defined in the `.env` file.
 DISCORD_TOKEN=xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 PORTAINER_USER=username
 PORTAINER_PASS=password
-PORTAINER_URL=http://example.com:9000/api
+PORTAINER_URL=http://example.com:9000/
 CONTAINER_ID=yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy
 RESTART_TRIGGER=restart the container
 DISCORD_TEST_TRIGGER=>** discordtest
