@@ -84,11 +84,11 @@ def restart_container():
 #     )
 
 
-@bot.tree.command(name="standings", description="NBA standings by conference")
-async def standings(interaction: discord.Interaction, conference: str):
-    await interaction.response.send_message(
-        str("\n".join(nbastandings.playoffs(conference)))
-    )
+# @bot.tree.command(name="standings", description="NBA standings by conference")
+# async def standings(interaction: discord.Interaction, conference: str):
+#     await interaction.response.send_message(
+#         str("\n".join(nbastandings.playoffs(conference)))
+#     )
 
 
 @bot.tree.command(name="stfu", description="Shut the fuck up")
@@ -97,14 +97,14 @@ async def stfu(interaction: discord.Interaction, user: str):
     await interaction.response.send_message(f"Shut the fuck up, {user}")
 
 
-@bot.tree.command(name="lottery", description="Lottery teams")
-async def standings(interaction: discord.Interaction):
-    await interaction.response.send_message(str("\n".join(nbastandings.lottery())))
+# @bot.tree.command(name="lottery", description="Lottery teams")
+# async def standings(interaction: discord.Interaction):
+#     await interaction.response.send_message(str("\n".join(nbastandings.lottery())))
 
 
-@bot.tree.command(name="streak", description="W/L streak of an NBA team")
-async def standings(interaction: discord.Interaction, teamname: str):
-    await interaction.response.send_message(nbastandings.streak(teamname))
+# @bot.tree.command(name="streak", description="W/L streak of an NBA team")
+# async def standings(interaction: discord.Interaction, teamname: str):
+#     await interaction.response.send_message(nbastandings.streak(teamname))
 
 
 # @bot.tree.command(name="record", description="Current W/L record of an NBA team")
