@@ -60,77 +60,10 @@ def restart_container():
     return restart_response.status_code
 
 
-# @bot.tree.command(name="scores", description="NBA scores")
-# @discord.app_commands.describe(date="Date in YYYY-MM-DD format")
-# async def scores(interaction: discord.Interaction, date: str = ""):
-#     await interaction.response.send_message(str("\n".join(nbascores.getscores(date))))
-# try:
-#     datetime.strptime(date, "%Y-%m-%d")
-# except ValueError:
-#     await interaction.response.send_message(
-#         f"Sorry {interaction.user.mention}, {date} is not a valid date. Please use the YYYY-MM-DD format."
-#     )
-#     return
-# try:
-#     r = nbascores.getscores(date)
-#     assert r
-# except AssertionError:
-#     await interaction.response.send_message(
-#         f"There are no games scheduled on {date}, {interaction.user.mention}"
-#     )
-# else:
-#     await interaction.response.send_message(
-#         f"NBA scores for {date}\n\n" + str("\n".join(r))
-#     )
-
-
-# @bot.tree.command(name="standings", description="NBA standings by conference")
-# async def standings(interaction: discord.Interaction, conference: str):
-#     await interaction.response.send_message(
-#         str("\n".join(nbastandings.playoffs(conference)))
-#     )
-
-
 @bot.tree.command(name="stfu", description="Shut the fuck up")
 @discord.app_commands.describe(user="The user you want to shut the fuck up")
 async def stfu(interaction: discord.Interaction, user: str):
     await interaction.response.send_message(f"Shut the fuck up, {user}")
-
-
-# @bot.tree.command(name="lottery", description="Lottery teams")
-# async def standings(interaction: discord.Interaction):
-#     await interaction.response.send_message(str("\n".join(nbastandings.lottery())))
-
-
-# @bot.tree.command(name="streak", description="W/L streak of an NBA team")
-# async def standings(interaction: discord.Interaction, teamname: str):
-#     await interaction.response.send_message(nbastandings.streak(teamname))
-
-
-# @bot.tree.command(name="record", description="Current W/L record of an NBA team")
-# async def standings(interaction: discord.Interaction, teamname: str):
-#     await interaction.response.send_message(nbastandings.record(teamname))
-
-
-# @bot.tree.command(
-#     name="leaders", description="The top 10 players in a given statistical category"
-# )
-# @discord.app_commands.describe(
-#     statistic="A statistical category such as points or rebounds"
-# )
-# async def standings(interaction: discord.Interaction, statistic: str):
-#     await interaction.response.send_message(
-#         str("\n".join(nbaleaders.leaders(statistic)))
-#     )
-
-
-# @bot.tree.command(name="seasonstats", description="Player season stats")
-# @discord.app_commands.describe(playername="An NBA player's name")
-# async def seasonstats(interaction: discord.Interaction, playername: str):
-#     await interaction.channel.typing()
-#     await interaction.response.send_message(
-#         str("\n".join(nbaseasonstats.seasonstats(playername)))
-#     )
 
 
 @bot.event
