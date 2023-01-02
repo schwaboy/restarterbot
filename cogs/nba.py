@@ -1,11 +1,16 @@
 """A Discord.py 2.0 Cog for NBA statistics"""
 import requests
 from datetime import datetime
-import asyncio
 import pytz
 import discord
+import inflect
 from discord.ext import commands
-from nba_api.stats.endpoints import commonplayerinfo, PlayerDashboardByGameSplits
+from nba_api.stats.endpoints import (
+    commonplayerinfo,
+    PlayerDashboardByGameSplits,
+    leaguestandingsv3,
+    leagueleaders,
+)
 from nba_api.stats.static import players
 
 tz = pytz.timezone("US/Hawaii")
@@ -117,7 +122,6 @@ class nba(commands.Cog):
             )
         else:
             scores = [f"NBA scores for {date}\n\n"]
-
         for game in schedule["scoreboard"]["games"]:
             if game["gameStatus"] == 1:
                 scores.append(
@@ -176,7 +180,6 @@ class nba(commands.Cog):
             ).common_player_info.get_dict()
         except:
             await interaction.followup.send(f"Player not found, {playername}")
-
         stats = [
             f"Season Stats for {player[0]['full_name']} ({player_info['data'][0][20]})\n"
         ]
@@ -200,8 +203,117 @@ class nba(commands.Cog):
             f"{info[20]} TO  {info[24]} PF  {info[27]} +/-  {info[6]} MN  {info[2]} GP"
         )
         print(str("\n".join(stats)))
-
         await interaction.followup.send(str("\n".join(stats)))
+
+    @discord.app_commands.command(
+        name="leaders", description="The top 10 players in a given statistical category"
+    )
+    @discord.app_commands.describe(
+        statistic="A statistical category such as points or rebounds"
+    )
+    async def nbaleaders(self, interaction: discord.Interaction, statistic: str):
+        """List the top 10 players in a given statistical category"""
+        await interaction.response.defer()
+        for k, v in statnicks.items():
+            if statistic.lower() in v:
+                statname = k
+            elif statistic.upper() == k:
+                statname = k
+        result = leagueleaders.LeagueLeaders(
+            stat_category_abbreviation=statname, per_mode48="PerGame"
+        )
+        print(result)
+        info = result.get_dict()["resultSet"]
+        i = info["headers"].index(statname)
+        x = [f"League leaders in {statnicks[statname][0]}\n"]
+        for player in info["rowSet"]:
+            if player[1] <= 10:
+                x.append(
+                    f"{player[1]} - {player[2]} ({player[4]})  {player[i]} {statname}"
+                )
+        await interaction.followup.send(str("\n".join(x)))
+
+    @discord.app_commands.command(
+        name="record", description="Current W/L record of an NBA team"
+    )
+    @discord.app_commands.describe(teamname="The name of an NBA team")
+    async def nbarecord(self, interaction: discord.Interaction, teamname: str):
+        await interaction.response.defer()
+        """Pull the current W/L record of the specified team"""
+        result = leaguestandingsv3.LeagueStandingsV3()
+        standings = result.get_dict()["resultSets"][0]["rowSet"]
+        p = inflect.engine()
+        for k, v in teamalias.items():
+            if teamname.lower() in v:
+                teamname = k
+        for team in standings:
+            if teamname.capitalize() in team:
+                x = f"{team[3]} {team[4]}\nRecord: {team[13]}-{team[14]} ({('%.3f' %team[15]).lstrip('0')})\n{p.ordinal(team[12])} in the {team[10]} Division.\n{p.ordinal(team[8])} in the {team[6]}ern Conference.\n{team[11].strip()} vs. the {team[10]} Division.\n{team[7].strip()} vs. the {team[6]}ern Conference."
+                [team[13], team[14], team[15], team[10], team[12], team[13]]
+        await interaction.followup.send(x)
+
+    @discord.app_commands.command(
+        name="streak",
+        description="The current W/L streak and record for the last 10 games of an NBA team",
+    )
+    @discord.app_commands.describe(teamname="The name of an NBA team")
+    async def streak(self, interaction: discord.Interaction, teamname: str):
+        """Pull the current W/L streak and record for the last 10 games of a specified team"""
+        await interaction.response.defer()
+        result = leaguestandingsv3.LeagueStandingsV3()
+        standings = result.get_dict()["resultSets"][0]["rowSet"]
+        for k, v in teamalias.items():
+            if teamname.lower() in v:
+                teamname = k
+        for team in standings:
+            if teamname.capitalize() in team:
+                x = f"{team[3]} {team[4]}\nCurrent streak: {team[37]}\nLast 10 games: {team[20]}"
+        await interaction.followup.send(x)
+
+    @discord.app_commands.command(
+        name="standings", description="NBA standings by conference"
+    )
+    async def standings(self, interaction: discord.Interaction, conference: str):
+        """Pull the top 8 teams for the specified conference"""
+        await interaction.response.defer()
+        result = leaguestandingsv3.LeagueStandingsV3()
+        standings = result.get_dict()["resultSets"][0]["rowSet"]
+        teams = []
+        count = 1
+        for team in standings:
+            if team[10] in confs[conference.lower()]:
+                teams.append(team)
+        x = []
+        for team in teams:
+            x.append(
+                f"{count} - {team[3]} {team[4]} {team[17]} ("
+                + ("%.3f" % team[15]).lstrip("0")
+                + ")"
+            )
+            count += 1
+            if count >= 9:
+                break
+        await interaction.followup.send(str("\n".join(x)))
+
+    @discord.app_commands.command(name="lottery", description="Lottery teams")
+    async def lottery(self, interaction: discord.Interaction):
+        await interaction.response.defer()
+        "Pull the bottom 14 teams league-wide"
+        result = leaguestandingsv3.LeagueStandingsV3()
+        standings = result.get_dict()["resultSets"][0]["rowSet"]
+        standings.sort(reverse=True, key=lambda x: x[15])
+        x = []
+        count = 15
+        for team in standings:
+            if team[8] > 8:
+                count -= 1
+                x.insert(
+                    0,
+                    f"{count} - {team[3]} {team[4]}  {team[17]}  ("
+                    + ("%.3f" % team[15]).lstrip("0")
+                    + ")",
+                )
+        await interaction.followup.send(str("\n".join(x)))
 
 
 async def setup(bot):
