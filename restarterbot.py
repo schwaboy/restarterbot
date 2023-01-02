@@ -9,22 +9,16 @@ import requests
 import discord
 from discord.ext import commands
 import cogs.nba as nba
-import nbastandings
-import nbaleaders
-import nbaseasonstats
-import aliases
-from datetime import datetime
-import pytz
 
 
 load_dotenv()
 TOKEN = os.getenv("DISCORD_TOKEN")
-# bot = discord.bot()
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 logging.basicConfig(filename="thebot.log", filemode="a", level=logging.DEBUG)
 
 
 async def load():
+    """Load all cogs"""
     for file in os.listdir("./cogs"):
         if file.endswith(".py"):
             await bot.load_extension(f"cogs.{file[:-3]}")
