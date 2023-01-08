@@ -1,4 +1,4 @@
-Version: 0.0.2
+## Starting to turn this into more of a Sports-themed Discord bot. We'll see how it goes!
 
 # Restarterbot
 
