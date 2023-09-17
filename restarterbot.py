@@ -8,7 +8,6 @@ from dotenv import load_dotenv
 import requests
 import discord
 from discord.ext import commands
-import cogs.nba as nba
 
 
 load_dotenv()
@@ -66,22 +65,19 @@ async def on_message(message):
     if message.author == bot.user:
         return
     elif message.content.lower().startswith("greetings"):
-        channel = message.channel
-        await channel.send("Hello {.author.display_name}!".format(message))
+        await message.channel.send("Hello {.author.display_name}!".format(message))
     elif message.content.endswith(os.getenv("DISCORD_TEST_TRIGGER")):
-        channel = message.channel
-        await channel.send(os.getenv("DISCORD_TEST_RESPONSE"))
+        await message.channel.send(os.getenv("DISCORD_TEST_RESPONSE"))
     elif message.content.lower() == os.getenv("RESTART_TRIGGER"):
-        channel = message.channel
         status = restart_container()
         if status == 204:
-            await channel.send(
+            await message.channel.send(
                 "Restarting the bot at the request of {.author.display_name}.".format(
                     message
                 )
             )
         else:
-            await channel.send("Failed to restart the bot. Error code: " + status)
+            await message.channel.send("Failed to restart the bot. Error code: " + status)
 
 
 async def main():

@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "restarterbot"
+version = "0.1.0"
+description = "The Restarterbot"
+authors = ["Steve Hiatt <schwa@xmission.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+"discord.py" = "^2.3.2"
+omdb = "^0.10.1"
+logging = "^0.4.9.6"
+asyncio = "^3.4.3"
+requests = "^2.31.0"
+nba-api = "^1.2.1"
+pytz = "^2023.3.post1"
+inflect = "^7.0.0"
+python-dotenv = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
