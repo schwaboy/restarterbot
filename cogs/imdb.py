@@ -1,12 +1,13 @@
 import os
 import discord
+import requests
 from omdb import OMDBClient
 from dotenv import load_dotenv
 from discord.ext import commands
 
 load_dotenv()
 apikey = os.getenv("IMDB_API_KEY")
-
+dictkey = os.getenv("DICTIONARY_API_KEY")
 client=OMDBClient(apikey=apikey)
 
 
@@ -52,6 +53,19 @@ class imdb(commands.Cog):
         embed.add_field(name="Production", value=movie["production"], inline=True)
         embed.add_field(name="Website", value=movie["website"], inline=True)
         await interaction.response.send_message(embed=embed)
+
+    @discord.app_commands.command(name="dict", description="Get the dictionary definition of a word")
+    @discord.app_commands.describe(word="Word")
+    async def dictionary(self, interaction: discord.Interaction, word: str = ""):
+        """Return the dictionary definition of a word"""
+        await interaction.response.defer()
+        url = f'https://dictionaryapi.com/api/v3/references/collegiate/json/{word}?key={dictkey}'
+        response = requests.get(url)
+        definition = response.json()
+        if definition:
+            await interaction.followup.send(f"{word} ({definition[0]['fl']}) - {definition[0]['hwi']['prs'][0]['mw']}\n{definition[0]['shortdef'][0]}")
+        else:
+            await interaction.followup.send(f"{word} is not a word.")
 
 async def setup(bot):
     await bot.add_cog(imdb(bot))
