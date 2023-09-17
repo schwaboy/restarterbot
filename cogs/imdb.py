@@ -8,6 +8,7 @@ from discord.ext import commands
 load_dotenv()
 apikey = os.getenv("IMDB_API_KEY")
 dictkey = os.getenv("DICTIONARY_API_KEY")
+theskey = os.getenv("THESAURUS_API_KEY")
 client=OMDBClient(apikey=apikey)
 
 
@@ -66,6 +67,19 @@ class imdb(commands.Cog):
             await interaction.followup.send(f"{word} ({definition[0]['fl']}) - {definition[0]['hwi']['prs'][0]['mw']}\n{definition[0]['shortdef'][0]}")
         else:
             await interaction.followup.send(f"{word} is not a word.")
+
+    @discord.app_commands.command(name="thes", description="Get similar words")
+    @discord.app_commands.describe(word="Word")
+    async def thes(self, interaction: discord.Interaction, word: str = ""):
+        """Return similar words"""
+        await interaction.response.defer()
+        url = f'https://www.dictionaryapi.com/api/v3/references/thesaurus/json/{word}?key={theskey}'
+        response = requests.get(url)
+        definition = response.json()
+        try:
+            await interaction.followup.send(f"{word} ({definition[0]['fl']})\n{', '.join(definition[0]['meta']['syns'][0][:])}")
+        except TypeError:
+            await interaction.followup.send(f"No synonyms found for \"{word}\".")
 
 async def setup(bot):
     await bot.add_cog(imdb(bot))
