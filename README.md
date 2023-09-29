@@ -1,3 +1,7 @@
+# This is going away soon. I intend to replace it with a whole new repository.
+
+
+
 ## Starting to turn this into more of a Sports-themed Discord bot. We'll see how it goes!
 
 # Restarterbot
